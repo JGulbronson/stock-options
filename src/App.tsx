@@ -1,7 +1,15 @@
-import React from "react";
-import { Button, Container } from "@material-ui/core";
+import React, { useState } from "react";
+import { Box, Button, Container, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import {
+  CartesianGrid,
+  Label,
+  Line,
+  LineChart,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 const useStyles = makeStyles({
   root: {
@@ -12,34 +20,68 @@ const useStyles = makeStyles({
   },
   controls: {
     width: 200,
+    marginTop: 20,
+  },
+  lineChart: {
+    marginLeft: "auto",
+    marginRight: "auto",
   },
 });
 
-const data = [
-  { name: "Start", uv: 0 },
-  { name: "Year 1", uv: 400 },
-  { name: "Year 2", uv: 800 },
-  { name: "Year 3", uv: 1200 },
-  { name: "Year 4", uv: 1600 },
-];
-
 const App = () => {
   const classes = useStyles();
+
+  const [numberOfOptions, setNumberOfOptions] = useState(100);
+  const [preferredPrice, setPreferredPrice] = useState(1);
+
+  const data = [
+    { name: "Start", amount: 0 },
+    { name: "Year 1", amount: (numberOfOptions / 4) * preferredPrice },
+    { name: "Year 2", amount: (numberOfOptions / 2) * preferredPrice },
+    { name: "Year 3", amount: (numberOfOptions / 4) * 3 * preferredPrice },
+    { name: "Year 4", amount: numberOfOptions * preferredPrice },
+  ];
+
   return (
     <Container fixed className={classes.root}>
       <div className={classes.graph}>
-        <LineChart width={600} height={300} data={data}>
-          <Line type="monotone" dataKey="uv" stroke="#8884d8" />
+        <LineChart
+          width={700}
+          height={450}
+          data={data}
+          className={classes.lineChart}
+        >
+          <Tooltip
+            formatter={(value) => new Intl.NumberFormat("en").format(+value)}
+          />
+          <Line type="monotone" dataKey="amount" stroke="#8884d8" />
           <CartesianGrid stroke="#ccc" />
           <XAxis dataKey="name" />
-          <YAxis />
+          <YAxis type="number" width={100} />
         </LineChart>
       </div>
-      <div className={classes.controls}>
-        <Button variant="contained" color="primary">
-          Click me
-        </Button>
-      </div>
+      <Box className={classes.controls}>
+        <Box m={2}>
+          <TextField
+            label="Number of options"
+            type="number"
+            value={numberOfOptions}
+            onChange={(e) => {
+              setNumberOfOptions(+e.target.value);
+            }}
+          />
+        </Box>
+        <Box m={2}>
+          <TextField
+            label="Preferred Price"
+            type="number"
+            value={preferredPrice}
+            onChange={(e) => {
+              setPreferredPrice(+e.target.value);
+            }}
+          />
+        </Box>
+      </Box>
     </Container>
   );
 };
