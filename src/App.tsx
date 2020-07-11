@@ -54,7 +54,12 @@ const App = () => {
           <Tooltip
             formatter={(value) => new Intl.NumberFormat("en").format(+value)}
           />
-          <Line type="monotone" dataKey="amount" stroke="#8884d8" />
+          <Line
+            type="monotone"
+            dataKey="amount"
+            stroke="#8884d8"
+            isAnimationActive={false}
+          />
           <CartesianGrid stroke="#ccc" />
           <XAxis dataKey="name" />
           <YAxis type="number" width={100} />
